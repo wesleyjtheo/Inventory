@@ -24,12 +24,23 @@ def get_security_pin():
     """Get security PIN from environment or generate one"""
     global SECURITY_PIN_HASH
     pin = os.getenv('SECURITY_PIN')
+    if pin:
+        pin = pin.strip()
+
+    running_on_render = os.getenv('RENDER', '').lower() == 'true'
+
     if not pin:
+        if running_on_render:
+            raise RuntimeError(
+                "SECURITY_PIN is not set. Configure it in Render Environment variables."
+            )
         # Generate a random 6-digit PIN
         pin = str(secrets.randbelow(900000) + 100000)
         print(f"\n⚠️  SECURITY PIN: {pin}")
         print(f"   Set SECURITY_PIN={pin} in your .env file to keep it permanent\n")
     else:
+        if not (pin.isdigit() and len(pin) == 6):
+            raise ValueError("SECURITY_PIN must be exactly 6 digits")
         print(f"\n🔒 Security PIN loaded from .env file\n")
     
     # Store as hash
