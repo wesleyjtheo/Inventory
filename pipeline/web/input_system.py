@@ -36,6 +36,9 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 app.config['SESSION_COOKIE_SECURE'] = os.getenv('SESSION_COOKIE_SECURE', 'false').lower() == 'true'
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
 
+# Ensure PIN hash is initialized for WSGI servers (e.g., Gunicorn).
+get_security_pin()
+
 
 @app.after_request
 def add_security_headers(response):
