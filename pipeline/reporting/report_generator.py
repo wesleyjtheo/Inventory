@@ -12,6 +12,10 @@ class ReportGenerator:
     def __init__(self):
         self.warehouse = SoraWarehouse()
     
+    @staticmethod
+    def _display_name(code: str, name: str) -> str:
+        return f"{code} - {name}" if name else code
+    
     def generate_text_report(self, exported_by: str) -> str:
         """Generate a text-based inventory report"""
         stock = self.warehouse.get_all_stock()
@@ -110,7 +114,7 @@ class ReportGenerator:
             # For supply types, identifier is the key; for nail products, nail_type+identifier
             is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
             key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-            name = item_names.get(key, 'Unknown')
+            name = self._display_name(key, item_names.get(key, ''))
             qty = item.get('quantity', 0)
             
             # Handle supplies as one group
@@ -162,7 +166,7 @@ class ReportGenerator:
                 # For supply types, identifier is the key; for nail products, nail_type+identifier
                 is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
                 key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-                name = item_names.get(key, 'Unknown')
+                name = self._display_name(key, item_names.get(key, ''))
                 
                 # Handle supplies as one group
                 if is_supply and not in_supplies_section:
@@ -270,7 +274,7 @@ class ReportGenerator:
             for item in items:
                 is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
                 key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-                name = item_names.get(key, 'Unknown')
+                name = self._display_name(key, item_names.get(key, ''))
                 report_lines.append(
                     f"{item['nail_type']:<8}{item['identifier']:<10}{name:<40}{item.get('quantity', 0):>10}"
                 )

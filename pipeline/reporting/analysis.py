@@ -11,6 +11,10 @@ from pipeline.core.sora_warehouse import SoraWarehouse
 class InventoryAnalyzer:
     def __init__(self):
         self.warehouse = SoraWarehouse()
+
+    @staticmethod
+    def _display_name(code: str, name: str) -> str:
+        return f"{code} - {name}" if name else code
     
     def get_size_distribution(self) -> Dict:
         """Get total quantity distribution by size across all inventory"""
@@ -108,7 +112,9 @@ class InventoryAnalyzer:
         
         # Add names
         for item in sorted_items:
-            item['name'] = item_names.get(item['identifier'], 'Unknown')
+            is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
+            key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
+            item['name'] = self._display_name(key, item_names.get(key, ''))
         
         return sorted_items
     
@@ -138,7 +144,9 @@ class InventoryAnalyzer:
         
         # Add names
         for item in sorted_items:
-            item['name'] = item_names.get(item['identifier'], 'Unknown')
+            is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
+            key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
+            item['name'] = self._display_name(key, item_names.get(key, ''))
         
         return sorted_items
     
@@ -214,7 +222,7 @@ class InventoryAnalyzer:
             # For supply types, identifier is the key; for nail products, nail_type+identifier
             is_supply = nail_type in ['Glue', 'Toolkit', 'Box']
             key = identifier if is_supply else f"{nail_type}{identifier}"
-            name = item_names.get(key, 'Unknown')
+            name = self._display_name(key, item_names.get(key, ''))
             
             items_by_size[size].append({
                 'nail_type': nail_type,
@@ -256,7 +264,7 @@ class InventoryAnalyzer:
             is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
             key = identifier if is_supply else f"{item['nail_type']}{identifier}"
             product_sizes[identifier]['nail_type'] = item['nail_type']
-            product_sizes[identifier]['name'] = item_names.get(key, 'Unknown')
+            product_sizes[identifier]['name'] = self._display_name(key, item_names.get(key, ''))
             product_sizes[identifier]['sizes'].add(item['size'])
         
         # Analyze completeness

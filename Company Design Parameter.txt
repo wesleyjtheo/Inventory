@@ -1,0 +1,287 @@
+SORA STUDIO — INTERNAL DESIGN SPEC
+====================================
+Version: 1.0 | Last Updated: 2026-04-09
+For: Design team, developers, marketing team, production
+NOT for external/client distribution
+
+------------------------------------
+1. BRAND SUMMARY
+------------------------------------
+- Premium press-on nail & beauty brand
+- Visual identity: minimalist, monochrome, editorial, warm
+- Target customer: Asian women 20-30, socialite/high-fashion lifestyle
+- Tone: quiet luxury, clean, subtly elite
+- Think: high-end gallery, not loud retail
+
+------------------------------------
+2. COLOR SYSTEM
+------------------------------------
+
+PRIMARY (use 90% of the time):
+- #FFFFFF    Pure White         → main backgrounds
+- #F5F3F0   Warm Off-White     → alternate sections, cards
+- #E8E4DF   Warm Light Grey    → borders, dividers, card bg
+- #B8B2AA   Warm Mid Grey      → secondary borders
+- #1A1816   Near Black         → headlines, main text
+- #6B665F   Warm Grey          → secondary text, captions
+- #9E9890   Light Warm Grey    → placeholders, disabled
+
+ACCENT (use sparingly — max 10% of any layout):
+- #C4A76C   Muted Gold         → CTAs, active states, highlights
+- #DBC9A0   Soft Gold          → icon tints, badges
+- #EDE8E0   Pearl              → hover glow, shimmer overlay
+- #D4B5A0   Warm Nude          → tags, soft accents
+- #C0C0C0   Silver             → secondary metallic
+
+SEMANTIC:
+- #7A9E6B   Success (muted green)
+- #C4976C   Warning (warm amber)
+- #A65D5D   Error (muted red — not alarming)
+
+RULES:
+- 70% white/off-white, 20% warm grey, 10% gold/accent
+- NO neon, NO saturated colors, NO cool-toned/blue greys
+- All text must pass WCAG AA contrast (4.5:1 body, 3:1 large)
+
+------------------------------------
+3. TYPOGRAPHY
+------------------------------------
+
+FONTS (load from Google Fonts CDN):
+- Display/Headlines: Cormorant Garamond (weights 300-600)
+- Body/UI: Sora (weights 300-500)
+- Fallbacks: Georgia (serif), Inter (sans-serif)
+
+SIZES (desktop / mobile):
+- Hero title:      72-96px / 40-48px     line-height 1.05   tracking +0.08em
+- H1:              48-56px / 32-36px     line-height 1.1    tracking +0.04em
+- H2:              36-40px / 28-32px     line-height 1.15   tracking +0.02em
+- H3:              24-28px / 20-22px     line-height 1.25   tracking +0.01em
+- Body large:      18-20px / 16-18px     line-height 1.6    tracking 0
+- Body:            16px    / 15-16px     line-height 1.6    tracking 0
+- Caption:         12-13px / 11-12px     line-height 1.4    tracking +0.06em
+- Button:          13-14px / 13px        line-height 1      tracking +0.12em
+
+RULES:
+- Max 55-70 characters per line
+- Uppercase ONLY for: logo, buttons, captions, nav links
+- Never bold body text — use medium (500) for emphasis
+- Never underline unless it's a link
+- Minimum text size: 12px (never smaller)
+
+------------------------------------
+4. SPACING
+------------------------------------
+
+BASE UNIT: 8px
+
+TOKENS:
+- xs:    4px     → inline icon gaps
+- sm:    8px     → tight gaps
+- md:    16px    → card padding
+- lg:    24px    → between related blocks
+- xl:    48px    → between sections
+- 2xl:   80px    → hero padding
+- 3xl:   120px   → major page sections
+
+GRID:
+- Desktop (1440px): 12 col, 24px gutter, 80-120px margin
+- Tablet (768px):   8 col, 20px gutter, 40-48px margin
+- Mobile (375px):   4 col, 16px gutter, 20-24px margin
+
+RULES:
+- White space = luxury. More space = more premium feel.
+- Product grids: max 2-3 columns desktop. Never 4+.
+- Content max-width: 1200px (text), 1440px (full-bleed images)
+- Section spacing: minimum 80px desktop, 48px mobile
+
+------------------------------------
+5. IMAGERY
+------------------------------------
+
+PHOTO REQUIREMENTS:
+- Real editorial photography ONLY (no stock, no AI faces)
+- Warm studio lighting, soft directional
+- Desaturated warm tones
+- Min 2x retina resolution
+- Aspect ratios: 3:4 (product), 1:1 (grid), 16:9 (hero), 4:5 (mobile hero)
+
+MODEL CASTING:
+- Age: 20-30
+- Demographic: Asian
+- Posture: confident, editorial, bold
+- Expression: 70% resting natural, 20% light smile, 10% editorial gaze
+- Styling: minimal jewelry (pearl, silver, gold), clean makeup
+
+PRODUCT SHOTS:
+- Pearl, silver, gold accessories
+- Reflective surfaces (glass, mirror, chrome)
+- White/grey/monochrome studio backgrounds
+- Large close-ups — product fills 60-80% of frame
+- Props: white towels, eucalyptus, blush-toned bottles
+
+SCENE CONTEXTS:
+- Catwalk / runway
+- Café (hand holding cup)
+- Street style (sunglasses gesture)
+- Magazine editorial
+- Gallery / exhibition
+- Indoor studio (grey/white walls)
+
+POST-PROCESSING (Lightroom values):
+- Temperature: +5 to +10
+- Tint: +3
+- Exposure: +0.1 to +0.3
+- Contrast: medium
+- Highlights: -15
+- Shadows: +20
+- Whites: +10
+- Blacks: +5 (no true black)
+- Saturation: -15 to -20
+- Vibrance: -5
+- Grain: none
+
+------------------------------------
+6. SHADOWS & DEPTH
+------------------------------------
+
+- Elevation 0: none (default flat)
+- Elevation 1: 0 2px 8px rgba(26,24,22,0.04)     → card hover
+- Elevation 2: 0 4px 16px rgba(26,24,22,0.06)     → dropdowns, modals
+- Elevation 3: 0 8px 32px rgba(26,24,22,0.08)     → hero overlays
+
+RULES:
+- Soft shadows only, warm-toned (brown-black base, NOT blue)
+- No hard borders — use shadow or tone shift instead
+- Frosted glass (backdrop-filter: blur) OK sparingly
+
+------------------------------------
+7. MOTION & ANIMATION
+------------------------------------
+
+TIMING:
+- Subtle:     300ms    ease-in-out                              → hover, opacity
+- Standard:   600ms    cubic-bezier(0.25, 0.1, 0.25, 1)        → page transitions
+- Slow:       1000-1500ms  cubic-bezier(0.16, 1, 0.3, 1)       → hero, logo
+- Cinematic:  2000-3000ms  ease-in-out                          → parallax, scenes
+
+ALLOWED:
+- Logo: fade-in 1.5s, scale 0.96→1
+- Text: slide up 12-20px + fade, 600-800ms, stagger 100ms
+- Product: fade + scale 0.98→1, 800ms
+- Card hover: shadow increase + translateY -2px, 300ms
+- Image hover: zoom scale 1→1.03, 600ms
+- Scroll parallax: bg at 0.3x speed
+- Shimmer: CSS gradient sweep, 3-4s loop, opacity 0.05-0.1
+- Page transition: fade 400ms out, 600ms in
+
+NOT ALLOWED:
+- Bounce, elastic, spring effects
+- Spin, flip, 3D rotation
+- Typing/typewriter effects
+- Counter/number animations
+- Fast cuts or sudden movements
+- Anything that feels "energetic"
+
+VIDEO ON SITE:
+- Main frame = still editorial photo
+- Only ONE small moving element (light reflection, shimmer, floating tag)
+- If bg video: slow camera glide, desaturated, low opacity
+- Must respect prefers-reduced-motion (show static fallback)
+
+------------------------------------
+8. UI COMPONENTS
+------------------------------------
+
+BUTTONS:
+- Primary:   bg #C4A76C, text #FFFFFF, uppercase, tracking +0.12em, radius 4px, padding 14px 32px
+- Secondary: border 1px #1A1816, bg transparent, text #1A1816
+- Ghost:     no border, text #6B665F, gold underline on hover
+- Hover:     gold darkens to #A88B50, 300ms
+
+INPUTS:
+- Bottom border only, 1px #E8E4DF
+- Focus: border → #C4A76C
+- Bg: transparent
+- Label: 12px uppercase, #9E9890, letter-spaced
+
+NAV:
+- Minimal top bar, logo centered
+- Links: Sora 13px uppercase, tracking +0.1em
+- Color: #1A1816 default, #C4A76C hover/active
+- Mobile: full-screen overlay, fade-in, centered large text
+- Sticky on scroll: bg fades to white + soft shadow
+
+PRODUCT CARDS:
+- No border (shadow on hover only)
+- Radius: 0px or 2px (sharp/editorial)
+- Image: 3:4, zoom 1.03 on hover
+- Title: Sora 14px medium
+- Price: Sora 13px light, #6B665F
+- Padding: 16px internal, 24px between cards
+
+------------------------------------
+9. ICONS
+------------------------------------
+- Style: thin line, 1-1.5px stroke, monochrome
+- Set: Phosphor Icons (Light weight) or custom
+- Color: #1A1816 default, #C4A76C active/hover
+- Size: 20-24px standard, 16px inline
+- NO filled icons, NO emoji, NO colorful illustrations
+
+------------------------------------
+10. RESPONSIVE RULES
+------------------------------------
+
+DESKTOP → MOBILE CHANGES:
+- Nav: horizontal bar → hamburger → fullscreen overlay
+- Hero: full bleed + overlay text → stacked (image top, text below)
+- Product grid: 2-3 col → 1-2 col
+- Type: scale down ~20-25%
+- Spacing: reduce sections to 48-64px (still generous)
+- Animation: reduce parallax, simpler reveals
+
+------------------------------------
+11. SENSORY NOTES (for experience design)
+------------------------------------
+These guide UX feel, event planning, and packaging:
+
+- SIGHT:  warm monochrome, white space, glass, shimmer
+- SOUND:  calm salon music, satisfying product clicks
+- SMELL:  clean/floral scent (eucalyptus, white florals)
+- TASTE:  welcome drink or candy at physical events
+- TOUCH:  soft towels, smooth packaging, luxe texture
+          → web: smooth scroll, soft shadows, tactile button press
+
+------------------------------------
+12. QUICK DON'TS CHECKLIST
+------------------------------------
+[ ] No neon or saturated colors
+[ ] No cool-toned greys or blues
+[ ] No stock photos or AI-generated faces
+[ ] No more than 2 font families
+[ ] No fast/bouncy animations
+[ ] No cluttered grids (max 3 col products)
+[ ] No hard drop shadows
+[ ] No filled/colored icons
+[ ] No bold body text
+[ ] No walls of text without spacing
+
+------------------------------------
+13. QUICK REFERENCE
+------------------------------------
+BRAND:     Sora Studio
+VIBE:      Clean, Elite, Editorial, Calm
+COLORS:    White + Warm Grey + Gold
+FONTS:     Cormorant Garamond (headlines) + Sora (body)
+IMAGERY:   Editorial, warm-lit, Asian models 20-30
+MOTION:    Slow fades, gentle glides, breathing rhythm
+SPACING:   8px grid, generous white space
+SHADOWS:   Soft, warm-toned
+ICONS:     Thin line, monochrome
+CTA:       Gold button, uppercase
+FEEL:      Quiet high-end gallery
+
+====================================
+END OF SPEC
+====================================

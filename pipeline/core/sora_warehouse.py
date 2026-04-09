@@ -3,8 +3,10 @@ Sora Warehouse Management System
 Handles data storage and retrieval for nail inventory using Supabase
 """
 
+import csv
 import os
 from datetime import datetime
+from pathlib import Path
 from typing import List, Optional
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -17,6 +19,9 @@ class SoraWarehouse:
     SUPPLY_TYPES = {'Glue': 0, 'Toolkit': 0, 'Box': 0}  # Supplies don't have pricing
     SIZES = ['XS', 'S', 'M', 'L']
     SUPPLY_SIZE = 'UNIT'  # Standard size for supplies
+    PRODUCT_NAME_CSV = Path(__file__).resolve().parents[2] / 'product_code_names.csv'
+    _product_name_cache: Optional[dict] = None
+    _product_name_cache_mtime: float = 0.0
     
     DEFAULT_ITEM_NAMES = {
         'X1': 'Forever Red', 'S1': 'ECLIPSE', 'S2': 'LORREN', 'S3': 'BLUE FIRE',
@@ -54,6 +59,48 @@ class SoraWarehouse:
         
         self.supabase: Client = create_client(supabase_url, supabase_key)
         self._verify_connection()
+
+    @classmethod
+    def _item_name_key(cls, nail_type: str, identifier: str) -> str:
+        """Create the canonical key used by the product name CSV."""
+        return identifier if nail_type in cls.SUPPLY_TYPES else f"{nail_type}{identifier}"
+
+    @classmethod
+    def _load_product_names(cls, force_refresh: bool = False) -> dict:
+        """Load the product name map from the CSV file."""
+        try:
+            current_mtime = cls.PRODUCT_NAME_CSV.stat().st_mtime
+        except FileNotFoundError:
+            current_mtime = 0.0
+
+        if (
+            cls._product_name_cache is not None and
+            not force_refresh and
+            cls._product_name_cache_mtime == current_mtime
+        ):
+            return cls._product_name_cache.copy()
+
+        names: dict = {}
+        try:
+            with cls.PRODUCT_NAME_CSV.open('r', encoding='utf-8-sig', newline='') as csv_file:
+                reader = csv.DictReader(csv_file)
+                for row in reader:
+                    code = (row.get('product_code') or row.get('item_key') or '').strip()
+                    name = (row.get('product_name') or row.get('name') or '').strip()
+                    if code:
+                        names[code] = name
+            cls._product_name_cache = names
+            cls._product_name_cache_mtime = current_mtime
+        except FileNotFoundError:
+            print(f"Warning: product name CSV not found at {cls.PRODUCT_NAME_CSV}")
+            cls._product_name_cache = {}
+            cls._product_name_cache_mtime = 0.0
+        except Exception as e:
+            print(f"Error loading product names from CSV: {e}")
+            cls._product_name_cache = {}
+            cls._product_name_cache_mtime = 0.0
+
+        return cls._product_name_cache.copy()
     
     def _verify_connection(self):
         """Verify database connection"""
@@ -176,96 +223,32 @@ class SoraWarehouse:
     def get_item_name(self, nail_type: str, identifier: str) -> str:
         """Get the name for a specific item"""
         try:
-            # For supply types, don't concatenate (identifier already equals nail_type)
-            is_supply = nail_type in ['Glue', 'Toolkit', 'Box']
-            key = identifier if is_supply else f"{nail_type}{identifier}"
-            result = self.supabase.table('item_names').select('name').eq('item_key', key).execute()
-            
-            if result.data:
-                return result.data[0]['name']
-            else:
-                # Return default name if exists
-                return self.DEFAULT_ITEM_NAMES.get(key, '')
+            key = self._item_name_key(nail_type, identifier)
+            return self._load_product_names().get(key, '')
         except Exception as e:
             print(f"Error getting item name: {e}")
-            is_supply = nail_type in ['Glue', 'Toolkit', 'Box']
-            key = identifier if is_supply else f"{nail_type}{identifier}"
-            return self.DEFAULT_ITEM_NAMES.get(key, '')
+            return ''
     
     def get_all_item_names(self) -> dict:
         """Get all item names"""
         try:
-            result = self.supabase.table('item_names').select('*').execute()
-            names = {item['item_key']: item['name'] for item in result.data}
-            
-            # Merge with defaults
-            all_names = self.DEFAULT_ITEM_NAMES.copy()
-            all_names.update(names)
-            return all_names
+            return self._load_product_names()
         except Exception as e:
             print(f"Error getting all names: {e}")
-            return self.DEFAULT_ITEM_NAMES.copy()
+            return {}
     
     def update_item_name(self, nail_type: str, identifier: str, name: str, changed_by: str = 'System') -> bool:
-        """Update or set the name for a specific item"""
-        try:
-            # For supply types, don't concatenate (identifier already equals nail_type)
-            is_supply = nail_type in ['Glue', 'Toolkit', 'Box']
-            key = identifier if is_supply else f"{nail_type}{identifier}"
-            old_name = None
-            
-            # Check if name already exists
-            result = self.supabase.table('item_names').select('*').eq('item_key', key).execute()
-            
-            if result.data:
-                # Update existing
-                old_name = result.data[0]['name']
-                self.supabase.table('item_names').update({
-                    'name': name,
-                    'updated_at': datetime.now().isoformat()
-                }).eq('item_key', key).execute()
-            else:
-                # Insert new
-                self.supabase.table('item_names').insert({
-                    'item_key': key,
-                    'nail_type': nail_type,
-                    'identifier': identifier,
-                    'name': name,
-                    'created_at': datetime.now().isoformat(),
-                    'updated_at': datetime.now().isoformat()
-                }).execute()
-            
-            # Log the change
-            self._log_name_change(nail_type, identifier, old_name, name, changed_by)
-            
-            return True
-        except Exception as e:
-            print(f"Error updating item name: {e}")
-            return False
+        """Name editing is disabled; edit product_code_names.csv instead."""
+        print("Name editing is disabled. Update product_code_names.csv instead.")
+        return False
     
     def initialize_default_names(self) -> bool:
-        """Initialize database with default item names"""
+        """Legacy compatibility hook; refreshes the CSV cache only."""
         try:
-            for key, name in self.DEFAULT_ITEM_NAMES.items():
-                nail_type = key[0]
-                identifier = key[1:]
-                
-                # Check if already exists
-                result = self.supabase.table('item_names').select('*').eq('item_key', key).execute()
-                
-                if not result.data:
-                    self.supabase.table('item_names').insert({
-                        'item_key': key,
-                        'nail_type': nail_type,
-                        'identifier': identifier,
-                        'name': name,
-                        'created_at': datetime.now().isoformat(),
-                        'updated_at': datetime.now().isoformat()
-                    }).execute()
-            
+            self._load_product_names(force_refresh=True)
             return True
         except Exception as e:
-            print(f"Error initializing default names: {e}")
+            print(f"Error refreshing product names: {e}")
             return False
     
     def _log_name_change(self, nail_type: str, identifier: str, old_name: str, new_name: str, changed_by: str):

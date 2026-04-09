@@ -227,6 +227,9 @@ HTML_TEMPLATE = """
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <style>
@@ -654,10 +657,11 @@ HTML_TEMPLATE = """
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(26, 24, 22, 0.56);
+            backdrop-filter: blur(3px);
             z-index: 1000;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
         }
         .modal.active {
             display: flex;
@@ -665,21 +669,25 @@ HTML_TEMPLATE = """
             justify-content: center;
         }
         .modal-content {
-            background: #fff;
-            border-radius: 8px;
-            padding: 24px;
+            background: var(--sora-white);
+            border-radius: 4px;
+            padding: 28px;
+            border: 1px solid var(--sora-light-grey);
+            box-shadow: 0 4px 16px rgba(26,24,22,0.06);
             max-width: 600px;
             width: 100%;
-            margin: 20px auto;
+            margin: 28px auto;
             position: relative;
         }
         .bulk-modal-content {
-            background: #fff;
-            border-radius: 8px;
-            padding: 24px;
+            background: var(--sora-white);
+            border-radius: 4px;
+            padding: 28px;
+            border: 1px solid var(--sora-light-grey);
+            box-shadow: 0 4px 16px rgba(26,24,22,0.06);
             max-width: 900px;
             width: 100%;
-            margin: 20px auto;
+            margin: 28px auto;
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
@@ -689,74 +697,107 @@ HTML_TEMPLATE = """
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--sora-light-grey);
         }
         .modal-header h2 {
-            font-size: 18px;
-            font-weight: 600;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: var(--sora-text-primary);
+            line-height: 1.1;
+            margin: 0;
+            text-transform: none;
+        }
+        .modal-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-kicker {
+            margin-top: 2px;
+            margin-bottom: 8px;
+            color: var(--sora-text-secondary);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 12px;
         }
         .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
+            background: transparent;
+            border: 1px solid var(--sora-light-grey);
+            border-radius: 4px;
+            color: var(--sora-text-secondary);
+            font-size: 20px;
             cursor: pointer;
             padding: 0;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 300ms ease-in-out;
+        }
+        .close-btn:hover {
+            color: var(--sora-gold);
+            border-color: var(--sora-gold-light);
         }
         .stock-table {
             width: 100%;
             border-collapse: collapse;
+            background: var(--sora-white);
         }
         .stock-table th {
             text-align: left;
-            padding: 12px 8px;
-            border-bottom: 2px solid #000;
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--sora-mid-grey);
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            color: var(--sora-text-secondary);
+            background: var(--sora-off-white);
         }
         .stock-table td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--sora-light-grey);
+            font-size: 13px;
+            color: var(--sora-text-primary);
         }
         .stock-table tr:hover {
-            background: #f8f8f8;
+            background: #f9f7f4;
         }
         .low-stock-id-row {
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
         }
         .low-stock-id-row:hover {
-            background: #f0f0f0;
+            background: #f7f2e9;
         }
         .low-stock-detail-row {
-            background: #fafafa;
+            background: #fcfbf9;
         }
         .low-stock-detail-row td {
             padding-left: 30px;
             font-size: 13px;
-            color: #666;
+            color: var(--sora-text-secondary);
         }
         .expand-icon {
             display: inline-block;
             margin-right: 8px;
             transition: transform 0.2s;
+            color: var(--sora-gold);
         }
         .expand-icon.expanded {
             transform: rotate(90deg);
         }
         .stock-qty {
+            font-weight: 500;
+            color: var(--sora-text-primary);
+        }
+        .low-stock-total {
+            color: var(--sora-error);
             font-weight: 600;
-            color: #000;
         }
         .empty-state {
             text-align: center;
@@ -770,86 +811,78 @@ HTML_TEMPLATE = """
             padding: 20px 0;
         }
         .stock-group-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            padding: 20px;
+            background: var(--sora-white);
+            border-radius: 2px;
+            padding: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: var(--sora-text-primary);
+            border: 1px solid var(--sora-light-grey);
+            border-left: 3px solid var(--sora-gold);
+            box-shadow: 0 2px 8px rgba(26,24,22,0.04);
             position: relative;
             overflow: hidden;
         }
         .stock-group-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        .stock-group-card:nth-child(1) {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .stock-group-card:nth-child(2) {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        .stock-group-card:nth-child(3) {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        .stock-group-card:nth-child(4) {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-        .stock-group-card:nth-child(5) {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-        .stock-group-card:nth-child(6) {
-            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
-        }
-        .stock-group-card:nth-child(7) {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            box-shadow: 0 8px 16px rgba(26,24,22,0.08);
         }
         .stock-group-header h3 {
             margin: 0 0 12px 0;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--sora-text-secondary);
         }
         .stock-group-total {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 34px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
             margin: 12px 0;
+            color: var(--sora-text-primary);
         }
         .stock-group-meta {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 12px;
             margin-top: 8px;
+            color: var(--sora-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
         .stock-group-arrow {
             position: absolute;
-            right: 20px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 24px;
-            opacity: 0.6;
+            font-size: 20px;
+            opacity: 0.9;
             transition: all 0.3s ease;
+            color: var(--sora-gold);
         }
         .stock-group-card:hover .stock-group-arrow {
             opacity: 1;
-            right: 15px;
+            right: 14px;
         }
         .back-btn {
-            background: #2196F3;
-            color: white;
-            border: none;
+            background: var(--sora-white);
+            color: var(--sora-text-primary);
+            border: 1px solid var(--sora-mid-grey);
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 16px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.2s;
+            transition: all 300ms ease-in-out;
         }
         .back-btn:hover {
-            background: #1976D2;
+            border-color: var(--sora-gold);
+            color: var(--sora-gold);
         }
         .loading {
             text-align: center;
@@ -858,21 +891,23 @@ HTML_TEMPLATE = """
         .analysis-container {
             max-height: 600px;
             overflow-y: auto;
-            padding: 20px;
+            padding: 4px;
         }
         .analysis-section {
-            margin-bottom: 30px;
-            background: #fafafa;
+            margin-bottom: 22px;
+            background: #fcfbf9;
             padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #000;
+            border-radius: 4px;
+            border: 1px solid var(--sora-light-grey);
+            border-left: 3px solid var(--sora-gold);
         }
         .analysis-section h3 {
             margin: 0 0 15px 0;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.04em;
         }
         .analysis-grid {
             display: grid;
@@ -881,75 +916,133 @@ HTML_TEMPLATE = """
             margin-bottom: 15px;
         }
         .analysis-stat {
-            background: #fff;
+            background: var(--sora-white);
             padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            border: 1px solid var(--sora-light-grey);
         }
         .analysis-stat-label {
             font-size: 11px;
-            color: #666;
+            color: var(--sora-text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
             margin-bottom: 5px;
         }
         .analysis-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
+            font-size: 28px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            color: var(--sora-text-primary);
+        }
+        .analysis-stat-value.low {
+            color: var(--sora-error);
+        }
+        .analysis-stat-value.medium {
+            color: var(--sora-warning);
+        }
+        .analysis-stat-value.high {
+            color: var(--sora-success);
         }
         .analysis-table {
             width: 100%;
-            background: #fff;
+            background: var(--sora-white);
             border-collapse: collapse;
-            border-radius: 6px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--sora-light-grey);
         }
         .analysis-table th {
-            background: #000;
-            color: #fff;
-            padding: 12px 8px;
+            background: var(--sora-off-white);
+            color: var(--sora-text-secondary);
+            padding: 12px 10px;
             text-align: left;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
+            font-weight: 500;
         }
         .analysis-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 10px;
+            border-bottom: 1px solid var(--sora-light-grey);
             font-size: 13px;
         }
         .analysis-table tr:hover {
-            background: #f8f8f8;
+            background: #f8f5ef;
         }
         .health-score {
             display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 600;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-weight: 500;
             font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
-        .health-excellent { background: #d4edda; color: #155724; }
-        .health-good { background: #d1ecf1; color: #0c5460; }
-        .health-fair { background: #fff3cd; color: #856404; }
-        .health-needs-attention { background: #f8d7da; color: #721c24; }
+        .health-excellent { background: rgba(122,158,107,0.15); color: var(--sora-success); }
+        .health-good { background: rgba(196,167,108,0.16); color: #80693d; }
+        .health-fair { background: rgba(196,151,108,0.18); color: var(--sora-warning); }
+        .health-needs-attention { background: rgba(166,93,93,0.16); color: var(--sora-error); }
         .download-analysis-btn {
-            position: absolute;
-            top: 20px;
-            right: 60px;
-            padding: 10px 20px;
-            background: #000;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
+            position: static;
+            padding: 10px 16px;
+            border-radius: 4px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 300ms ease-in-out;
         }
-        .download-analysis-btn:hover {
-            background: #333;
+        .report-preview-box {
+            max-height: 70vh;
+            overflow-y: auto;
+            background: #fcfbf9;
+            border: 1px solid var(--sora-light-grey);
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .report-preview-pre {
+            white-space: pre-wrap;
+            font-family: 'Sora', sans-serif;
+            font-size: 12px;
+            line-height: 1.65;
+            color: var(--sora-text-primary);
+        }
+        .report-setup-form {
+            display: grid;
+            gap: 16px;
+        }
+        .report-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .report-note {
+            font-size: 12px;
+            color: var(--sora-text-secondary);
+            letter-spacing: 0.02em;
+        }
+        .analysis-size-block {
+            margin-bottom: 16px;
+            border: 1px solid var(--sora-light-grey);
+            border-radius: 4px;
+            padding: 14px;
+            background: var(--sora-white);
+        }
+        .analysis-size-heading {
+            margin: 0 0 10px 0;
+            color: var(--sora-text-primary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+        .analysis-size-heading span {
+            font-size: 12px;
+            color: var(--sora-text-secondary);
+            text-transform: none;
+            letter-spacing: 0;
+            margin-left: 4px;
+            font-weight: 400;
         }
         .upload-area {
             border: 2px dashed #d0d0d0;
@@ -1098,6 +1191,275 @@ HTML_TEMPLATE = """
         .removed-row .remove-row-btn {
             display: none;
         }
+
+        :root {
+            --sora-white: #FFFFFF;
+            --sora-off-white: #F5F3F0;
+            --sora-light-grey: #E8E4DF;
+            --sora-mid-grey: #B8B2AA;
+            --sora-text-primary: #1A1816;
+            --sora-text-secondary: #6B665F;
+            --sora-text-tertiary: #9E9890;
+            --sora-gold: #C4A76C;
+            --sora-gold-light: #DBC9A0;
+            --sora-success: #7A9E6B;
+            --sora-warning: #C4976C;
+            --sora-error: #A65D5D;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--sora-off-white);
+            color: var(--sora-text-primary);
+        }
+
+        .header {
+            background: var(--sora-white);
+            color: var(--sora-text-primary);
+            border: 1px solid var(--sora-light-grey);
+            box-shadow: 0 2px 8px rgba(26,24,22,0.04);
+        }
+
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .session-indicator {
+            background: var(--sora-light-grey);
+            color: var(--sora-text-primary);
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1200px;
+            background: transparent;
+            box-shadow: none;
+            border-radius: 0;
+            padding: 0;
+        }
+
+        .stock-monitor-panel {
+            background: var(--sora-white);
+            border: 1px solid var(--sora-light-grey);
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(26,24,22,0.04);
+            margin-bottom: 20px;
+        }
+
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .monitor-kicker {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sora-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .monitor-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 34px;
+            font-weight: 500;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .monitor-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .primary-cta,
+        .submit-btn,
+        .confirm-save-btn,
+        .download-analysis-btn {
+            background: var(--sora-gold);
+            color: var(--sora-white);
+            border: none;
+            border-radius: 4px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .primary-cta {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 300ms ease-in-out;
+        }
+
+        .primary-cta:hover,
+        .submit-btn:hover,
+        .confirm-save-btn:hover,
+        .download-analysis-btn:hover {
+            background: #b49458;
+        }
+
+        .secondary-btn,
+        .view-stock-btn,
+        .logout-btn {
+            background: var(--sora-white);
+            border: 1px solid var(--sora-mid-grey);
+            color: var(--sora-text-primary);
+            border-radius: 4px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .secondary-btn:hover,
+        .view-stock-btn:hover,
+        .logout-btn:hover {
+            border-color: var(--sora-gold);
+            color: var(--sora-gold);
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .metric-card {
+            background: var(--sora-off-white);
+            border: 1px solid var(--sora-light-grey);
+            border-radius: 4px;
+            padding: 14px 16px;
+        }
+
+        .metric-label {
+            color: var(--sora-text-secondary);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--sora-text-primary);
+        }
+
+        .dashboard-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .dashboard-controls .search-box {
+            margin: 0;
+        }
+
+        .dashboard-group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-group-card {
+            background: var(--sora-white);
+            border: 1px solid var(--sora-light-grey);
+            border-left: 4px solid var(--sora-gold);
+            border-radius: 2px;
+            padding: 14px;
+            cursor: pointer;
+            transition: box-shadow 300ms ease-in-out, transform 300ms ease-in-out;
+        }
+
+        .dashboard-group-card:hover {
+            box-shadow: 0 4px 16px rgba(26,24,22,0.06);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-group-name {
+            font-size: 13px;
+            color: var(--sora-text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .dashboard-group-total {
+            font-size: 24px;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--sora-text-primary);
+        }
+
+        .dashboard-group-items {
+            font-size: 12px;
+            color: var(--sora-text-tertiary);
+            margin-top: 6px;
+        }
+
+        .dashboard-table-wrap {
+            max-height: 420px;
+            overflow: auto;
+            border: 1px solid var(--sora-light-grey);
+            border-radius: 2px;
+            background: var(--sora-white);
+        }
+
+        .action-toolbar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        #updateModal .modal-content {
+            background: var(--sora-white);
+            border: 1px solid var(--sora-light-grey);
+        }
+
+        .action-btn.active {
+            background: var(--sora-gold);
+            color: var(--sora-white);
+            border-color: var(--sora-gold);
+        }
+
+        .message.success {
+            background: rgba(122, 158, 107, 0.14);
+            color: var(--sora-success);
+            border-color: var(--sora-success);
+        }
+
+        .message.error {
+            background: rgba(166, 93, 93, 0.12);
+            color: var(--sora-error);
+            border-color: var(--sora-error);
+        }
+
+        @media (max-width: 768px) {
+            .monitor-header {
+                flex-direction: column;
+            }
+
+            .monitor-title {
+                font-size: 28px;
+            }
+
+            .dashboard-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1110,92 +1472,139 @@ HTML_TEMPLATE = """
     </div>
     
     <div class="container">
-        <div class="action-buttons">
-            <button type="button" class="action-btn" data-action="input" onclick="selectAction('input')">
-                IN
-            </button>
-            <button type="button" class="action-btn" data-action="output" onclick="selectAction('output')">
-                OUT
-            </button>
+        <section class="stock-monitor-panel">
+            <div class="monitor-header">
+                <div>
+                    <div class="monitor-kicker">Live Inventory</div>
+                    <h2 class="monitor-title">Available Stock Overview</h2>
+                </div>
+                <div class="monitor-actions">
+                    <button type="button" class="secondary-btn" onclick="refreshDashboard(true)">Refresh</button>
+                    <button type="button" class="primary-cta" onclick="openUpdateModal()">Update Stock</button>
+                </div>
+            </div>
+
+            <div class="dashboard-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Total Units</div>
+                    <div class="metric-value" id="metricTotalUnits">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Entries</div>
+                    <div class="metric-value" id="metricEntries">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Low Stock (&lt;3)</div>
+                    <div class="metric-value" id="metricLowStock">0</div>
+                </div>
+            </div>
+
+            <div class="dashboard-controls">
+                <input type="text" id="dashboardSearchBox" class="search-box" placeholder="Search available stock..." oninput="scheduleDashboardFilter()">
+                <button type="button" class="secondary-btn" onclick="viewStock()">Detailed View</button>
+            </div>
+
+            <div id="dashboardGroupContainer" class="dashboard-group-grid">
+                <div class="loading">Loading stock groups...</div>
+            </div>
+
+            <div id="dashboardTableContainer" class="dashboard-table-wrap">
+                <div class="loading">Loading stock table...</div>
+            </div>
+        </section>
+
+        <div class="action-toolbar">
+            <button type="button" class="secondary-btn" onclick="bulkUpload()">Bulk Upload</button>
+            <button type="button" class="secondary-btn" onclick="viewLowStock()">Low Stock</button>
+            <button type="button" class="secondary-btn" onclick="viewAnalysis()">Analysis</button>
+            <button type="button" class="secondary-btn" onclick="publishReport()">Publish Report</button>
         </div>
-        
-        <form id="inventoryForm">
-            <input type="hidden" id="action" name="action" value="">
-            
-            <div class="form-section">
-                <label for="nail_type">Type</label>
-                <select id="nail_type" name="nail_type" required onchange="handleTypeChange()">
-                    <option value="">Select Type</option>
-                    <optgroup label="Nail Products">
-                        <option value="X">X — 250k</option>
-                        <option value="S">S — 200k</option>
-                        <option value="C">C — 180k</option>
-                        <option value="M">M — 150k</option>
-                        <option value="A">A — 130k</option>
-                        <option value="B">B — 100k</option>
-                    </optgroup>
-                    <optgroup label="Supplies">
-                        <option value="Glue">Glue</option>
-                        <option value="Toolkit">Toolkit</option>
-                        <option value="Box">Box</option>
-                    </optgroup>
-                </select>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="modal" id="updateModal">
+        <div class="modal-content" style="max-width: 560px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-kicker">Transaction</div>
+                    <h2>Update Stock</h2>
+                </div>
+                <button class="close-btn" onclick="closeUpdateModal()">&times;</button>
             </div>
-            
-            <div class="form-section" id="identifierSection">
-                <label for="identifier">ID</label>
-                <input type="text" id="identifier" name="identifier" placeholder="e.g., S1, S2, X1" required onchange="updateStockInfo()" oninput="updateStockInfo()">
+
+            <div class="action-buttons" style="margin-top: 0; margin-bottom: 16px;">
+                <button type="button" class="action-btn" data-action="input" onclick="selectAction('input')">IN</button>
+                <button type="button" class="action-btn" data-action="output" onclick="selectAction('output')">OUT</button>
             </div>
-            
-            <div class="grid-2">
-                <div class="form-section" id="sizeSection">
-                    <label for="size">Size</label>
-                    <select id="size" name="size" required onchange="updateStockInfo()">
-                        <option value="">Select Size</option>
-                        <option value="XS">XS</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
+
+            <form id="inventoryForm">
+                <input type="hidden" id="action" name="action" value="">
+
+                <div class="form-section">
+                    <label for="nail_type">Type</label>
+                    <select id="nail_type" name="nail_type" required onchange="handleTypeChange()">
+                        <option value="">Select Type</option>
+                        <optgroup label="Nail Products">
+                            <option value="X">X — 250k</option>
+                            <option value="S">S — 200k</option>
+                            <option value="C">C — 180k</option>
+                            <option value="M">M — 150k</option>
+                            <option value="A">A — 130k</option>
+                            <option value="B">B — 100k</option>
+                        </optgroup>
+                        <optgroup label="Supplies">
+                            <option value="Glue">Glue</option>
+                            <option value="Toolkit">Toolkit</option>
+                            <option value="Box">Box</option>
+                        </optgroup>
                     </select>
                 </div>
-                
-                <div class="form-section">
-                    <label for="quantity">Qty</label>
-                    <input type="number" id="quantity" name="quantity" min="1" placeholder="0" required>
+
+                <div class="form-section" id="identifierSection">
+                    <label for="identifier">ID</label>
+                    <input type="text" id="identifier" name="identifier" placeholder="e.g., S1, S2, X1" required onchange="updateStockInfo()" oninput="scheduleStockInfoUpdate()">
                 </div>
-            </div>
-            
-            <div class="stock-display" id="stockDisplay">
-                <div class="stock-label">CURRENT STOCK</div>
-                <div class="stock-value" id="currentStock">0</div>
-            </div>
-            
-            <button type="submit" class="submit-btn" id="submitBtn" disabled>Select Action</button>
-        </form>
-        
-        <button type="button" class="view-stock-btn" onclick="viewStock()">View All Stock</button>
-        
-        <div class="button-group">
-            <button type="button" class="secondary-btn" onclick="manageNames()">Manage Names</button>
+
+                <div class="grid-2">
+                    <div class="form-section" id="sizeSection">
+                        <label for="size">Size</label>
+                        <select id="size" name="size" required onchange="updateStockInfo()">
+                            <option value="">Select Size</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                        </select>
+                    </div>
+
+                    <div class="form-section">
+                        <label for="quantity">Qty</label>
+                        <input type="number" id="quantity" name="quantity" min="1" placeholder="0" required>
+                    </div>
+                </div>
+
+                <div class="stock-display" id="stockDisplay">
+                    <div class="stock-label">Current Stock</div>
+                    <div class="stock-value" id="currentStock">0</div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>Select Action</button>
+            </form>
         </div>
-        
-        <div class="button-group" style="margin-top: 12px;">
-            <button type="button" class="secondary-btn" onclick="publishReport()">Publish Report</button>
-            <button type="button" class="secondary-btn" onclick="viewAnalysis()">📊 Analysis</button>
-            <button type="button" class="secondary-btn" onclick="bulkUpload()">Bulk Upload</button>
-        </div>
-        
-        <div class="message" id="message"></div>
     </div>
     
     <div class="modal" id="stockModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Stock Inventory</h2>
+                <div>
+                    <div class="modal-kicker">Inventory View</div>
+                    <h2>Stock Inventory</h2>
+                </div>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div class="search-container" id="stockSearchContainer" style="display:none;">
-                <input type="text" class="search-box" id="stockSearchBox" placeholder="Search by Type, ID, Product Name, or Size..." oninput="filterStockTable()">
+                <input type="text" class="search-box" id="stockSearchBox" placeholder="Search by Type, ID, Product Name, or Size..." oninput="scheduleStockTableFilter()">
             </div>
             <div id="stockTableContainer">
                 <div class="loading">Loading...</div>
@@ -1266,13 +1675,78 @@ HTML_TEMPLATE = """
     <div class="modal" id="analysisModal">
         <div class="modal-content" style="max-width: 1200px;">
             <div class="modal-header">
-                <h2>📊 Inventory Analysis</h2>
-                <button class="download-analysis-btn" onclick="downloadAnalysisReport()">Download Report</button>
-                <button class="close-btn" onclick="closeAnalysisModal()">&times;</button>
+                <div>
+                    <div class="modal-kicker">Insight Studio</div>
+                    <h2>Inventory Analysis</h2>
+                </div>
+                <div class="modal-header-actions">
+                    <button class="download-analysis-btn" onclick="downloadAnalysisReport()">Download Report</button>
+                    <button class="close-btn" onclick="closeAnalysisModal()">&times;</button>
+                </div>
             </div>
             <div id="analysisContainer" class="analysis-container">
                 <div class="loading">Loading analysis...</div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal" id="reportSetupModal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-kicker">Report Builder</div>
+                    <h2>Prepare Inventory Report</h2>
+                </div>
+                <button class="close-btn" onclick="closeReportSetup()">&times;</button>
+            </div>
+
+            <form id="reportSetupForm" class="report-setup-form" onsubmit="confirmReportSetup(event)">
+                <div class="form-section" style="margin-bottom: 0;">
+                    <label for="reportExportedBy">Prepared By</label>
+                    <input type="text" id="reportExportedBy" placeholder="Enter your name" required>
+                </div>
+
+                <div class="form-section" style="margin-bottom: 0;">
+                    <label for="reportFormat">Format</label>
+                    <select id="reportFormat" required>
+                        <option value="pdf">PDF</option>
+                        <option value="txt">TXT</option>
+                    </select>
+                </div>
+
+                <p class="report-note">A live preview opens before download so you can verify content and format.</p>
+
+                <div class="report-actions">
+                    <button type="button" class="secondary-btn" onclick="closeReportSetup()">Cancel</button>
+                    <button type="submit" class="primary-cta">Preview Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="analysisExportModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-kicker">Insight Export</div>
+                    <h2>Prepare Analysis Report</h2>
+                </div>
+                <button class="close-btn" onclick="closeAnalysisExport()">&times;</button>
+            </div>
+
+            <form class="report-setup-form" onsubmit="confirmDownloadAnalysis(event)">
+                <div class="form-section" style="margin-bottom: 0;">
+                    <label for="analysisExportedBy">Prepared By</label>
+                    <input type="text" id="analysisExportedBy" placeholder="Enter your name" required>
+                </div>
+
+                <p class="report-note">The analysis report downloads as TXT with current inventory insights.</p>
+
+                <div class="report-actions">
+                    <button type="button" class="secondary-btn" onclick="closeAnalysisExport()">Cancel</button>
+                    <button type="submit" class="primary-cta">Download Analysis</button>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -1280,13 +1754,16 @@ HTML_TEMPLATE = """
     <div class="modal" id="reportPreviewModal">
         <div class="modal-content" style="max-width: 1000px;">
             <div class="modal-header">
-                <h2>📄 Report Preview</h2>
-                <div style="display: flex; gap: 10px;">
+                <div>
+                    <div class="modal-kicker">Preflight</div>
+                    <h2>Report Preview</h2>
+                </div>
+                <div class="modal-header-actions">
                     <button class="download-analysis-btn" onclick="confirmDownloadReport()">Download Report</button>
                     <button class="close-btn" onclick="closeReportPreview()">&times;</button>
                 </div>
             </div>
-            <div id="reportPreviewContainer" style="max-height: 70vh; overflow-y: auto; background: #f9f9f9; padding: 20px; border-radius: 4px;">
+            <div id="reportPreviewContainer" class="report-preview-box">
                 <div class="loading">Loading report preview...</div>
             </div>
         </div>
@@ -1298,6 +1775,167 @@ HTML_TEMPLATE = """
         const actionInput = document.getElementById('action');
         const submitBtn = document.getElementById('submitBtn');
         const actionButtons = document.querySelectorAll('.action-btn');
+        const updateModal = document.getElementById('updateModal');
+        const reportSetupModal = document.getElementById('reportSetupModal');
+        const analysisExportModal = document.getElementById('analysisExportModal');
+        const dashboardSearchBox = document.getElementById('dashboardSearchBox');
+
+        const CACHE_TTL_MS = 20000;
+        const stateCache = {
+            stock: null,
+            stockFetchedAt: 0,
+            names: null,
+            namesFetchedAt: 0
+        };
+
+        let dashboardFilterTerm = '';
+
+        function debounce(fn, waitMs) {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn(...args), waitMs);
+            };
+        }
+
+        function hasFreshCache(ts) {
+            return Date.now() - ts < CACHE_TTL_MS;
+        }
+
+        const debouncedStockInfoUpdate = debounce(updateStockInfo, 280);
+        const debouncedStockModalFilter = debounce(filterStockTable, 180);
+        const debouncedDashboardFilter = debounce(applyDashboardFilter, 180);
+        const debouncedNamesFilter = debounce((term) => renderNamesGrid(term), 180);
+
+        function scheduleStockInfoUpdate() {
+            debouncedStockInfoUpdate();
+        }
+
+        function scheduleStockTableFilter() {
+            debouncedStockModalFilter();
+        }
+
+        function scheduleDashboardFilter() {
+            debouncedDashboardFilter();
+        }
+
+        function scheduleNamesSearch(term) {
+            debouncedNamesFilter(term);
+        }
+
+        function invalidateStockCache() {
+            stateCache.stock = null;
+            stateCache.stockFetchedAt = 0;
+        }
+
+        function openUpdateModal() {
+            updateModal.classList.add('active');
+        }
+
+        function closeUpdateModal() {
+            updateModal.classList.remove('active');
+        }
+
+        updateModal.addEventListener('click', (e) => {
+            if (e.target === updateModal) {
+                closeUpdateModal();
+            }
+        });
+
+        reportSetupModal.addEventListener('click', (e) => {
+            if (e.target === reportSetupModal) {
+                closeReportSetup();
+            }
+        });
+
+        analysisExportModal.addEventListener('click', (e) => {
+            if (e.target === analysisExportModal) {
+                closeAnalysisExport();
+            }
+        });
+
+        function renderDashboard(stock, filterTerm = '') {
+            const normalized = filterTerm.trim().toLowerCase();
+            const filteredStock = normalized
+                ? stock.filter((item) => {
+                    const displayName = getItemDisplayName(item.nail_type, item.identifier).toLowerCase();
+                    return item.nail_type.toLowerCase().includes(normalized)
+                        || item.identifier.toLowerCase().includes(normalized)
+                        || item.size.toLowerCase().includes(normalized)
+                        || displayName.includes(normalized);
+                })
+                : stock;
+
+            const totalUnits = filteredStock.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+            const lowStockCount = filteredStock.filter((item) => Number(item.quantity || 0) < 3).length;
+
+            document.getElementById('metricTotalUnits').textContent = totalUnits.toLocaleString();
+            document.getElementById('metricEntries').textContent = filteredStock.length.toLocaleString();
+            document.getElementById('metricLowStock').textContent = lowStockCount.toLocaleString();
+
+            const groups = {};
+            filteredStock.forEach((item) => {
+                const groupKey = ['Glue', 'Toolkit', 'Box'].includes(item.nail_type) ? 'Supplies' : item.nail_type;
+                if (!groups[groupKey]) {
+                    groups[groupKey] = { total: 0, count: 0 };
+                }
+                groups[groupKey].total += Number(item.quantity || 0);
+                groups[groupKey].count += 1;
+            });
+
+            const groupContainer = document.getElementById('dashboardGroupContainer');
+            const sortedGroupKeys = Object.keys(groups).sort();
+            if (sortedGroupKeys.length === 0) {
+                groupContainer.innerHTML = '<div class="empty-state">No stock found for this filter.</div>';
+            } else {
+                groupContainer.innerHTML = sortedGroupKeys.map((groupKey) => {
+                    const label = groupKey === 'Supplies' ? 'Supplies' : `Type ${groupKey}`;
+                    return `
+                        <div class="dashboard-group-card" onclick="openStockGroupDetails('${groupKey}')">
+                            <div class="dashboard-group-name">${label}</div>
+                            <div class="dashboard-group-total">${groups[groupKey].total.toLocaleString()}</div>
+                            <div class="dashboard-group-items">${groups[groupKey].count} entries</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const tableContainer = document.getElementById('dashboardTableContainer');
+            const sortedPreview = [...filteredStock]
+                .sort((a, b) => Number(a.quantity || 0) - Number(b.quantity || 0))
+                .slice(0, 20);
+            tableContainer.innerHTML = renderStockTable(sortedPreview, true, false);
+        }
+
+        function applyDashboardFilter() {
+            dashboardFilterTerm = dashboardSearchBox.value || '';
+            renderDashboard(currentStockData, dashboardFilterTerm);
+        }
+
+        async function refreshDashboard(forceRefresh = false) {
+            try {
+                if (!forceRefresh && stateCache.stock && hasFreshCache(stateCache.stockFetchedAt)) {
+                    currentStockData = stateCache.stock;
+                } else {
+                    const response = await fetch('/view_all_stock');
+                    const data = await response.json();
+                    currentStockData = data.stock || [];
+                    stateCache.stock = currentStockData;
+                    stateCache.stockFetchedAt = Date.now();
+                }
+
+                renderDashboard(currentStockData, dashboardFilterTerm);
+            } catch (error) {
+                document.getElementById('dashboardGroupContainer').innerHTML = '<div class="empty-state">Unable to load dashboard groups.</div>';
+                document.getElementById('dashboardTableContainer').innerHTML = '<div class="empty-state">Unable to load dashboard table.</div>';
+                console.error('Dashboard refresh error:', error);
+            }
+        }
+
+        async function openStockGroupDetails(groupKey) {
+            await viewStock();
+            showGroupDetails(groupKey);
+        }
         
         function selectAction(action) {
             actionInput.value = action;
@@ -1422,6 +2060,7 @@ HTML_TEMPLATE = """
                 if (result.success) {
                     message.className = 'message success';
                     message.textContent = result.message;
+                    invalidateStockCache();
                     // Reset only ID, Size, Quantity, and Action (keep Type selected)
                     if (!isSupply) {
                         document.querySelector('input[name="identifier"]').value = '';
@@ -1435,6 +2074,8 @@ HTML_TEMPLATE = """
                     document.getElementById('stockDisplay').classList.remove('visible');
                     handleTypeChange();
                     updateStockInfo();
+                    await refreshDashboard(true);
+                    closeUpdateModal();
                 } else {
                     message.className = 'message error';
                     message.textContent = result.message;
@@ -1469,12 +2110,19 @@ HTML_TEMPLATE = """
             }
         }
         
-        async function loadItemNames() {
+        async function loadItemNames(forceRefresh = false) {
+            if (!forceRefresh && stateCache.names && hasFreshCache(stateCache.namesFetchedAt)) {
+                itemNames = stateCache.names;
+                return;
+            }
+
             try {
                 const response = await fetch('/get_item_names');
                 const data = await response.json();
                 if (data.success) {
                     itemNames = data.names;
+                    stateCache.names = data.names;
+                    stateCache.namesFetchedAt = Date.now();
                 }
             } catch (error) {
                 console.error('Error loading item names:', error);
@@ -1483,6 +2131,7 @@ HTML_TEMPLATE = """
         
         // Load names on page load
         loadItemNames();
+        refreshDashboard(true);
         
         function getItemDisplayName(nailType, identifier) {
             // For supply types, don't concatenate (identifier already equals nailType)
@@ -1579,7 +2228,7 @@ HTML_TEMPLATE = """
                     html += `<td><span class="expand-icon" id="icon-${rowId}">▶</span>${item.nail_type}</td>`;
                     html += `<td>${item.identifier}</td>`;
                     html += `<td>${displayName}</td>`;
-                    html += `<td class="stock-qty">${item.total_quantity}</td>`;
+                    html += `<td class="stock-qty low-stock-total">${item.total_quantity}</td>`;
                     html += '</tr>';
                     
                     // Hidden detail rows for each size
@@ -1694,7 +2343,7 @@ HTML_TEMPLATE = """
         let currentViewMode = 'grouped'; // 'grouped' or 'detail'
         let currentGroup = null;
         
-        async function viewStock() {
+        async function viewStock(forceRefresh = false) {
             const modal = document.getElementById('stockModal');
             const container = document.getElementById('stockTableContainer');
             const searchContainer = document.getElementById('stockSearchContainer');
@@ -1708,9 +2357,15 @@ HTML_TEMPLATE = """
             modalHeader.textContent = 'Stock Inventory';
             
             try {
-                const response = await fetch('/view_all_stock');
-                const data = await response.json();
-                currentStockData = data.stock;
+                if (!forceRefresh && stateCache.stock && hasFreshCache(stateCache.stockFetchedAt)) {
+                    currentStockData = stateCache.stock;
+                } else {
+                    const response = await fetch('/view_all_stock');
+                    const data = await response.json();
+                    currentStockData = data.stock;
+                    stateCache.stock = currentStockData;
+                    stateCache.stockFetchedAt = Date.now();
+                }
                 currentShowDelete = true;
                 currentHighlightLow = false;
                 currentViewMode = 'grouped';
@@ -1801,21 +2456,43 @@ HTML_TEMPLATE = """
         }
         
         async function publishReport() {
-            const exportedBy = prompt('Enter your name:');
-            if (!exportedBy) return;
-            
-            // Ask for format
-            const format = prompt('Choose format (type "pdf" or "txt"):');
-            if (!format || !['pdf', 'txt'].includes(format.toLowerCase())) {
-                alert('Invalid format. Please choose "pdf" or "txt"');
+            document.getElementById('reportExportedBy').value = '';
+            document.getElementById('reportFormat').value = 'pdf';
+            reportSetupModal.classList.add('active');
+        }
+
+        function closeReportSetup() {
+            reportSetupModal.classList.remove('active');
+        }
+
+        async function confirmReportSetup(event) {
+            event.preventDefault();
+
+            const exportedBy = document.getElementById('reportExportedBy').value.trim();
+            const format = document.getElementById('reportFormat').value.toLowerCase();
+
+            if (!exportedBy) {
+                message.style.display = 'block';
+                message.className = 'message error';
+                message.textContent = 'Prepared by is required.';
+                setTimeout(() => { message.style.display = 'none'; }, 2500);
                 return;
             }
-            
-            // Store the export info for later download
+
+            if (!['pdf', 'txt'].includes(format)) {
+                message.style.display = 'block';
+                message.className = 'message error';
+                message.textContent = 'Please choose a valid report format.';
+                setTimeout(() => { message.style.display = 'none'; }, 2500);
+                return;
+            }
+
             window.reportExportInfo = {
-                exportedBy: exportedBy,
-                format: format.toLowerCase()
+                exportedBy,
+                format
             };
+
+            closeReportSetup();
             
             // Show preview modal
             const modal = document.getElementById('reportPreviewModal');
@@ -1834,8 +2511,7 @@ HTML_TEMPLATE = """
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Display the report content in a formatted way
-                    container.innerHTML = `<pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; color: #333;">${data.report_content}</pre>`;
+                    container.innerHTML = `<pre class="report-preview-pre">${data.report_content}</pre>`;
                 } else {
                     container.innerHTML = '<div class="empty-state">Error loading report preview</div>';
                 }
@@ -1930,7 +2606,7 @@ HTML_TEMPLATE = """
             
             // Health Overview
             html += '<div class="analysis-section">';
-            html += '<h3>📈 Inventory Health Overview</h3>';
+            html += '<h3>Inventory Health Overview</h3>';
             html += '<div class="analysis-grid">';
             html += `<div class="analysis-stat"><div class="analysis-stat-label">Total Quantity</div><div class="analysis-stat-value">${health.total_quantity.toLocaleString()}</div></div>`;
             html += `<div class="analysis-stat"><div class="analysis-stat-label">Unique Products</div><div class="analysis-stat-value">${health.unique_products}</div></div>`;
@@ -1939,9 +2615,9 @@ HTML_TEMPLATE = """
             html += '</div>';
             
             html += '<div class="analysis-grid" style="margin-top: 15px;">';
-            html += `<div class="analysis-stat"><div class="analysis-stat-label">Low Stock (<4)</div><div class="analysis-stat-value" style="color: #d32f2f;">${health.low_stock_products} (${health.low_stock_percentage}%)</div></div>`;
-            html += `<div class="analysis-stat"><div class="analysis-stat-label">Medium Stock (4-10)</div><div class="analysis-stat-value" style="color: #f57c00;">${health.medium_stock_products}</div></div>`;
-            html += `<div class="analysis-stat"><div class="analysis-stat-label">High Stock (>10)</div><div class="analysis-stat-value" style="color: #388e3c;">${health.high_stock_products}</div></div>`;
+            html += `<div class="analysis-stat"><div class="analysis-stat-label">Low Stock (<4)</div><div class="analysis-stat-value low">${health.low_stock_products} (${health.low_stock_percentage}%)</div></div>`;
+            html += `<div class="analysis-stat"><div class="analysis-stat-label">Medium Stock (4-10)</div><div class="analysis-stat-value medium">${health.medium_stock_products}</div></div>`;
+            html += `<div class="analysis-stat"><div class="analysis-stat-label">High Stock (>10)</div><div class="analysis-stat-value high">${health.high_stock_products}</div></div>`;
             
             const healthClass = health.stock_health_score.toLowerCase().replace(' ', '-');
             html += `<div class="analysis-stat"><div class="analysis-stat-label">Health Score</div><div class="health-score health-${healthClass}">${health.stock_health_score}</div></div>`;
@@ -1950,7 +2626,7 @@ HTML_TEMPLATE = """
 
             // Low Stock Details
             html += '<div class="analysis-section">';
-            html += '<h3>⚠️ Low Stock Details (Total Quantity &lt; 4)</h3>';
+            html += '<h3>Low Stock Details (Total Quantity &lt; 4)</h3>';
 
             if (lowStockItems.length > 0) {
                 html += '<table class="analysis-table">';
@@ -1964,7 +2640,7 @@ HTML_TEMPLATE = """
                     html += `<td><strong>${item.nail_type}</strong></td>`;
                     html += `<td>${item.identifier}</td>`;
                     html += `<td>${displayName}</td>`;
-                    html += `<td style="color: #d32f2f; font-weight: 700;">${item.total_quantity}</td>`;
+                    html += `<td class="analysis-stat-value low" style="font-size: 20px;">${item.total_quantity}</td>`;
                     html += `<td>${sizeBreakdown || '-'}</td>`;
                     html += `</tr>`;
                 });
@@ -1978,7 +2654,7 @@ HTML_TEMPLATE = """
             
             // Size Distribution
             html += '<div class="analysis-section">';
-            html += '<h3>📏 Size Distribution - Overall</h3>';
+            html += '<h3>Size Distribution</h3>';
             html += '<table class="analysis-table">';
             html += '<thead><tr><th>Size</th><th>Total Quantity</th><th>Number of Entries</th><th>Percentage</th></tr></thead>';
             html += '<tbody>';
@@ -2000,13 +2676,13 @@ HTML_TEMPLATE = """
             
             // Items by Size - NEW SECTION
             html += '<div class="analysis-section">';
-            html += '<h3>🔍 Available Types by Size</h3>';
-            html += '<p style="color: #666; font-size: 13px; margin-bottom: 15px;">View what products are available for each size</p>';
+            html += '<h3>Available Types by Size</h3>';
+            html += '<p style="color: var(--sora-text-secondary); font-size: 13px; margin-bottom: 15px;">View product availability for each size profile.</p>';
             
             Object.keys(itemsBySize).sort().forEach(size => {
                 const sizeData = itemsBySize[size];
-                html += '<div style="margin-bottom: 20px; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px;">';
-                html += `<h4 style="margin: 0 0 10px 0; color: #1976d2;">Size: ${size} <span style="font-weight: normal; font-size: 13px; color: #666;">(${sizeData.unique_products} products, ${sizeData.total_quantity} units)</span></h4>`;
+                html += '<div class="analysis-size-block">';
+                html += `<h4 class="analysis-size-heading">Size ${size}<span>(${sizeData.unique_products} products, ${sizeData.total_quantity} units)</span></h4>`;
                 html += '<table class="analysis-table" style="margin: 0;">';
                 html += '<thead><tr><th>Type</th><th>ID</th><th>Product Name</th><th>Quantity</th></tr></thead>';
                 html += '<tbody>';
@@ -2028,7 +2704,7 @@ HTML_TEMPLATE = """
             
             // Category Statistics
             html += '<div class="analysis-section">';
-            html += '<h3>🗂️ Category Analysis</h3>';
+            html += '<h3>Category Analysis</h3>';
             html += '<table class="analysis-table">';
             html += '<thead><tr><th>Type</th><th>Total Quantity</th><th>Unique Products</th><th>Total Entries</th><th>Sizes Available</th></tr></thead>';
             html += '<tbody>';
@@ -2051,8 +2727,25 @@ HTML_TEMPLATE = """
         }
         
         async function downloadAnalysisReport() {
-            const analystName = prompt('Enter your name:');
-            if (!analystName) return;
+            document.getElementById('analysisExportedBy').value = '';
+            analysisExportModal.classList.add('active');
+        }
+
+        function closeAnalysisExport() {
+            analysisExportModal.classList.remove('active');
+        }
+
+        async function confirmDownloadAnalysis(event) {
+            event.preventDefault();
+
+            const analystName = document.getElementById('analysisExportedBy').value.trim();
+            if (!analystName) {
+                message.style.display = 'block';
+                message.className = 'message error';
+                message.textContent = 'Prepared by is required.';
+                setTimeout(() => { message.style.display = 'none'; }, 2500);
+                return;
+            }
             
             try {
                 const response = await fetch('/generate_analysis', {
@@ -2070,6 +2763,8 @@ HTML_TEMPLATE = """
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+
+                closeAnalysisExport();
                 
                 message.style.display = 'block';
                 message.className = 'message success';
@@ -2147,8 +2842,10 @@ HTML_TEMPLATE = """
                     message.className = 'message success';
                     message.textContent = result.message;
                     setTimeout(() => { message.style.display = 'none'; }, 3000);
-                    
-                    viewStock();
+
+                    invalidateStockCache();
+                    await refreshDashboard(true);
+                    viewStock(true);
                 } else {
                     message.style.display = 'block';
                     message.className = 'message error';
@@ -2174,314 +2871,6 @@ HTML_TEMPLATE = """
                 closeModal();
             }
         });
-        
-        async function manageNames() {
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.id = 'namesModal';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 900px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; font-size: 18px;">Manage Item Names</h3>
-                        <button class="close-btn" onclick="document.getElementById('namesModal').remove()">×</button>
-                    </div>
-                    <div style="margin-bottom: 16px;">
-                        <button class="history-btn" onclick="viewAllHistory()">View Change History</button>
-                    </div>
-                    <input type="text" class="search-box" id="nameSearchBox" placeholder="Search by ID or name..." oninput="renderNamesGrid(this.value)">
-                    <div id="namesContainer" class="names-grid">
-                        <div class="loading">Loading...</div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-            
-            await loadItemNames();
-            renderNamesGrid();
-        }
-        
-        function renderNamesGrid(searchTerm = '') {
-            const container = document.getElementById('namesContainer');
-            if (!container) return;
-            
-            // Sort keys by type (alphabetically) then by number (numerically)
-            const sortedKeys = Object.keys(itemNames).sort((a, b) => {
-                const typeA = a[0];
-                const typeB = b[0];
-                
-                // First sort by type
-                if (typeA !== typeB) {
-                    return typeA.localeCompare(typeB);
-                }
-                
-                // Then sort by number
-                const numA = parseInt(a.substring(1)) || 0;
-                const numB = parseInt(b.substring(1)) || 0;
-                return numA - numB;
-            });
-            
-            // Filter by search term
-            const filteredKeys = searchTerm 
-                ? sortedKeys.filter(key => 
-                    key.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    itemNames[key].toLowerCase().includes(searchTerm.toLowerCase())
-                  )
-                : sortedKeys;
-            
-            // Group by type
-            const grouped = {};
-            filteredKeys.forEach(key => {
-                const type = key[0];
-                if (!grouped[type]) grouped[type] = [];
-                grouped[type].push(key);
-            });
-            
-            let html = '';
-            
-            // Render each type section
-            Object.keys(grouped).sort().forEach(type => {
-                const typeNames = {
-                    'X': 'Type X — 250k',
-                    'S': 'Type S — 200k',
-                    'C': 'Type C — 180k',
-                    'M': 'Type M — 150k',
-                    'A': 'Type A — 130k',
-                    'B': 'Type B — 100k'
-                };
-                
-                html += `
-                    <div class="type-section">
-                        <div class="type-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'grid' : 'none'">
-                            <span>${typeNames[type] || type}</span>
-                            <span>${grouped[type].length} items</span>
-                        </div>
-                        <div class="type-items">
-                `;
-                
-                grouped[type].forEach(key => {
-                    const name = itemNames[key];
-                    const nailType = key[0];
-                    const identifier = key.substring(1);
-                    
-                    html += `
-                        <div class="name-item">
-                            <div class="name-item-header">${key}</div>
-                            <input type="text" class="name-input" id="name-${key}" value="${name}" placeholder="Enter name">
-                            <div style="display: flex; gap: 4px; margin-top: 6px;">
-                                <button class="save-name-btn" onclick="saveItemName('${nailType}', '${identifier}')">Save</button>
-                                <button class="save-name-btn" style="background: #007bff;" onclick="viewItemHistory('${key}')">📋</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            if (filteredKeys.length === 0) {
-                html = '<div class="empty-state">No items found</div>';
-            }
-            
-            container.innerHTML = html;
-        }
-        
-        async function saveItemName(nailType, identifier) {
-            const key = `${nailType}${identifier}`;
-            const nameInput = document.getElementById(`name-${key}`);
-            const name = nameInput.value.trim();
-            
-            if (!name) {
-                alert('Please enter a name');
-                return;
-            }
-            
-            // Ask for who is making the change
-            const changedBy = prompt('Enter your name:');
-            if (!changedBy || !changedBy.trim()) {
-                alert('Name is required to track changes');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/update_item_name', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        nail_type: nailType,
-                        identifier: identifier,
-                        name: name,
-                        changed_by: changedBy.trim()
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    itemNames[key] = name;
-                    message.style.display = 'block';
-                    message.className = 'message success';
-                    message.textContent = result.message;
-                    setTimeout(() => { message.style.display = 'none'; }, 2000);
-                } else {
-                    message.style.display = 'block';
-                    message.className = 'message error';
-                    message.textContent = result.message;
-                    setTimeout(() => { message.style.display = 'none'; }, 3000);
-                }
-            } catch (error) {
-                message.style.display = 'block';
-                message.className = 'message error';
-                message.textContent = 'Error saving name';
-                setTimeout(() => { message.style.display = 'none'; }, 3000);
-            }
-        }
-        
-        async function initializeDefaultNames() {
-            if (!confirm('This will initialize all default item names in the database. Continue?')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('/initialize_names', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'}
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    message.style.display = 'block';
-                    message.className = 'message success';
-                    message.textContent = result.message;
-                    setTimeout(() => { message.style.display = 'none'; }, 2000);
-                    
-                    await loadItemNames();
-                    renderNamesGrid();
-                } else {
-                    message.style.display = 'block';
-                    message.className = 'message error';
-                    message.textContent = result.message;
-                    setTimeout(() => { message.style.display = 'none'; }, 3000);
-                }
-            } catch (error) {
-                message.style.display = 'block';
-                message.className = 'message error';
-                message.textContent = 'Error initializing names';
-                setTimeout(() => { message.style.display = 'none'; }, 3000);
-            }
-        }
-        
-        async function viewItemHistory(itemKey) {
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 700px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; font-size: 18px;">Change History for ${itemKey}</h3>
-                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    <div id="historyContainer" style="max-height: 500px; overflow-y: auto;">
-                        <div class="loading">Loading...</div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-            
-            try {
-                const response = await fetch(`/get_name_change_log?item_key=${itemKey}`);
-                const data = await response.json();
-                
-                if (data.success && data.logs.length > 0) {
-                    let html = '<table class="log-table">';
-                    html += '<thead><tr><th>Date & Time</th><th>Old Name</th><th>New Name</th><th>Changed By</th></tr></thead>';
-                    html += '<tbody>';
-                    
-                    data.logs.forEach(log => {
-                        const date = new Date(log.changed_at).toLocaleString();
-                        html += '<tr>';
-                        html += `<td>${date}</td>`;
-                        html += `<td>${log.old_name || '<em>N/A</em>'}</td>`;
-                        html += `<td>${log.new_name}</td>`;
-                        html += `<td>${log.changed_by}</td>`;
-                        html += '</tr>';
-                    });
-                    
-                    html += '</tbody></table>';
-                    document.getElementById('historyContainer').innerHTML = html;
-                } else {
-                    document.getElementById('historyContainer').innerHTML = '<div class="empty-state">No change history found</div>';
-                }
-            } catch (error) {
-                document.getElementById('historyContainer').innerHTML = '<div class="empty-state">Error loading history</div>';
-            }
-        }
-        
-        async function viewAllHistory() {
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 900px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; font-size: 18px;">All Name Changes (Last 100)</h3>
-                        <button class="close-btn" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    <div id="allHistoryContainer" style="max-height: 600px; overflow-y: auto;">
-                        <div class="loading">Loading...</div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-            
-            try {
-                const response = await fetch('/get_name_change_log');
-                const data = await response.json();
-                
-                if (data.success && data.logs.length > 0) {
-                    let html = '<table class="log-table">';
-                    html += '<thead><tr><th>Item</th><th>Date & Time</th><th>Old Name</th><th>New Name</th><th>Changed By</th></tr></thead>';
-                    html += '<tbody>';
-                    
-                    data.logs.forEach(log => {
-                        const date = new Date(log.changed_at).toLocaleString();
-                        html += '<tr>';
-                        html += `<td><strong>${log.item_key}</strong></td>`;
-                        html += `<td>${date}</td>`;
-                        html += `<td>${log.old_name || '<em>N/A</em>'}</td>`;
-                        html += `<td>${log.new_name}</td>`;
-                        html += `<td>${log.changed_by}</td>`;
-                        html += '</tr>';
-                    });
-                    
-                    html += '</tbody></table>';
-                    document.getElementById('allHistoryContainer').innerHTML = html;
-                } else {
-                    document.getElementById('allHistoryContainer').innerHTML = '<div class="empty-state">No change history found</div>';
-                }
-            } catch (error) {
-                document.getElementById('allHistoryContainer').innerHTML = '<div class="empty-state">Error loading history</div>';
-            }
-        }
         
         // Bulk Upload Functions
         let currentBulkData = null;

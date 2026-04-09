@@ -113,7 +113,7 @@ def pwa_manifest():
 def service_worker():
         """Serve service worker at root scope for app installability."""
         sw_content = """
-const CACHE_NAME = 'sora-inventory-v1';
+const CACHE_NAME = 'sora-inventory-v2';
 const APP_SHELL = ['/', '/login', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
 
 self.addEventListener('install', (event) => {
@@ -362,6 +362,9 @@ def view_low_stock():
 # REPORT GENERATION ROUTES
 # ============================================================================
 
+def _format_product_name(product_key: str, product_name: str) -> str:
+    return f"{product_key} - {product_name}" if product_name else product_key
+
 @app.route('/generate_report', methods=['POST'])
 @require_auth
 def generate_report():
@@ -391,7 +394,7 @@ def generate_report():
             # For supply types, identifier is the key; for nail products, nail_type+identifier
             is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
             key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-            name = item_names.get(key, 'Unknown')
+            name = _format_product_name(key, item_names.get(key, ''))
             csv_content += f"{item['nail_type']},{item['identifier']},{name},{item['size']},{item['quantity']}\n"
 
         # Available types by size summary
@@ -429,7 +432,7 @@ def generate_report():
             for item in items:
                 is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
                 key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-                name = item_names.get(key, 'Unknown')
+                name = _format_product_name(key, item_names.get(key, ''))
                 csv_content += f"{item['nail_type']},{item['identifier']},\"{name}\",{item.get('quantity', 0)}\n"
         
         response = make_response(csv_content)
@@ -598,8 +601,9 @@ def generate_report_pdf():
         stock_data = None
         
         for item in sorted_stock:
-            key = item['identifier']
-            name = item_names.get(key, 'Unknown')
+            is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
+            key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
+            name = _format_product_name(key, item_names.get(key, ''))
             
             if item['nail_type'] != current_type:
                 # Create table for previous type
@@ -796,7 +800,7 @@ def generate_report_pdf():
             for item in items:
                 is_supply = item['nail_type'] in ['Glue', 'Toolkit', 'Box']
                 key = item['identifier'] if is_supply else f"{item['nail_type']}{item['identifier']}"
-                name = item_names.get(key, 'Unknown')
+                name = _format_product_name(key, item_names.get(key, ''))
                 size_detail_data.append([
                     item['nail_type'],
                     item['identifier'],
@@ -913,57 +917,6 @@ def get_item_names():
     try:
         names = warehouse.get_all_item_names()
         return jsonify({'success': True, 'names': names})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/update_item_name', methods=['POST'])
-@require_auth
-def update_item_name():
-    """Update item name"""
-    try:
-        data = request.json
-        nail_type = data.get('nail_type')
-        identifier = data.get('identifier')
-        name = data.get('name')
-        changed_by = data.get('changed_by', 'Unknown')
-        
-        if not all([nail_type, identifier, name]):
-            return jsonify({'success': False, 'message': 'Missing required fields'})
-        
-        success = warehouse.update_item_name(nail_type, identifier, name, changed_by)
-        
-        # For supply types, don't concatenate type and identifier
-        is_supply = nail_type in ['Glue', 'Toolkit', 'Box']
-        display_id = identifier if is_supply else f'{nail_type}{identifier}'
-        
-        if success:
-            return jsonify({'success': True, 'message': f'Updated {display_id} to "{name}"'})
-        else:
-            return jsonify({'success': False, 'message': 'Failed to update name'})
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-@app.route('/initialize_names', methods=['POST'])
-@require_auth
-def initialize_names():
-    """Initialize default item names in database"""
-    try:
-        success = warehouse.initialize_default_names()
-        if success:
-            return jsonify({'success': True, 'message': 'Default names initialized'})
-        else:
-            return jsonify({'success': False, 'message': 'Failed to initialize names'})
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-@app.route('/get_name_change_log', methods=['GET'])
-@require_auth
-def get_name_change_log():
-    """Get name change history"""
-    try:
-        item_key = request.args.get('item_key')
-        logs = warehouse.get_name_change_log(item_key)
-        return jsonify({'success': True, 'logs': logs})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
