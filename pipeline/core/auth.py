@@ -6,8 +6,6 @@ import hashlib
 import time
 import secrets
 import os
-import smtplib
-from email.message import EmailMessage
 from functools import wraps
 from flask import session, request, jsonify, redirect
 
@@ -18,71 +16,6 @@ LOCKOUT_TIME = 300  # 5 minutes in seconds
 
 # Generate a random access token on startup
 ACCESS_TOKEN = secrets.token_urlsafe(32)
-
-# One-time code state per IP address
-otp_challenges = {}
-OTP_EXPIRY_SECONDS = 300  # 5 minutes
-DEFAULT_OTP_RECIPIENT = 'wesleyj.theo@gmail.com'
-
-
-def get_otp_recipient():
-    """Return the destination email for login OTP delivery."""
-    return os.getenv('OTP_RECIPIENT_EMAIL', DEFAULT_OTP_RECIPIENT).strip()
-
-
-def send_otp_email(code):
-    """Send a 6-digit login code through SMTP."""
-    smtp_host = os.getenv('SMTP_HOST', 'smtp.gmail.com').strip()
-    smtp_port = int(os.getenv('SMTP_PORT', '587'))
-    smtp_user = os.getenv('SMTP_USER', '').strip()
-    smtp_password = os.getenv('SMTP_PASSWORD', '').strip()
-    recipient = get_otp_recipient()
-
-    if not smtp_user or not smtp_password:
-        raise RuntimeError('SMTP_USER and SMTP_PASSWORD must be configured to send OTP email')
-
-    msg = EmailMessage()
-    msg['Subject'] = 'Sora Inventory Login Code'
-    msg['From'] = smtp_user
-    msg['To'] = recipient
-    msg.set_content(
-        f"Your Sora Inventory login code is: {code}\n\n"
-        f"This code expires in {OTP_EXPIRY_SECONDS // 60} minutes."
-    )
-
-    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_password)
-        server.send_message(msg)
-
-
-def issue_login_code(ip):
-    """Generate and send a one-time login code for this IP."""
-    code = f"{secrets.randbelow(1000000):06d}"
-    expires_at = time.time() + OTP_EXPIRY_SECONDS
-    otp_challenges[ip] = {
-        'code_hash': hashlib.sha256(code.encode()).hexdigest(),
-        'expires_at': expires_at,
-    }
-    send_otp_email(code)
-
-
-def verify_login_code(ip, code):
-    """Verify a submitted one-time code for the IP address."""
-    challenge = otp_challenges.get(ip)
-    if not challenge:
-        return False, 'No active code. Request a new code first.'
-
-    if time.time() > challenge['expires_at']:
-        otp_challenges.pop(ip, None)
-        return False, 'Code expired. Request a new code.'
-
-    submitted_hash = hashlib.sha256(code.encode()).hexdigest()
-    if submitted_hash != challenge['code_hash']:
-        return False, 'Invalid code.'
-
-    otp_challenges.pop(ip, None)
-    return True, ''
 
 # Security PIN - stored as hash
 SECURITY_PIN_HASH = None  # Will be set from environment or generated

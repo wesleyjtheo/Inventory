@@ -18,13 +18,5 @@ services:
         sync: false
       - key: SUPABASE_KEY
         sync: false
-      - key: OTP_RECIPIENT_EMAIL
-        value: "wesleyj.theo@gmail.com"
-      - key: SMTP_HOST
-        value: "smtp.gmail.com"
-      - key: SMTP_PORT
-        value: "587"
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASSWORD
+      - key: SECURITY_PIN
         sync: false

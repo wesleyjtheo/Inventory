@@ -140,63 +140,31 @@ LOGIN_TEMPLATE = """
             <p>Warehouse Management System</p>
         </div>
         <div class="error-message" id="errorMessage"></div>
-        <div class="security-note" id="statusMessage" style="display:none;"></div>
         <form id="loginForm">
             <div class="form-group">
-                <label for="code">Enter 6-Digit Login Code</label>
-                <input type="text" id="code" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required autocomplete="one-time-code" disabled>
+                <label for="pin">Enter Security PIN</label>
+                <input type="password" id="pin" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" required autocomplete="off">
             </div>
-            <button type="button" class="login-btn" id="sendCodeBtn">Send Code to Email</button>
-            <button type="submit" class="login-btn" id="loginBtn" style="margin-top:10px;" disabled>Verify and Access</button>
+            <button type="submit" class="login-btn" id="loginBtn">Access System</button>
         </form>
         <div class="security-note">
             <strong>🔒 Secure Connection</strong><br>
-            A new 6-digit code is emailed for every unlock. Session expires after 1 hour of inactivity.
+            This session is protected and will expire after 1 hour of inactivity
         </div>
     </div>
     <script>
         const form = document.getElementById('loginForm');
-        const codeInput = document.getElementById('code');
-        const sendCodeBtn = document.getElementById('sendCodeBtn');
+        const pinInput = document.getElementById('pin');
         const loginBtn = document.getElementById('loginBtn');
         const errorMessage = document.getElementById('errorMessage');
-        const statusMessage = document.getElementById('statusMessage');
-
-        sendCodeBtn.addEventListener('click', async () => {
-            sendCodeBtn.disabled = true;
-            sendCodeBtn.textContent = 'Sending...';
-
-            try {
-                const response = await fetch('/login/request-code', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'}
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showStatus(result.message || 'Code sent. Check your email.');
-                    codeInput.disabled = false;
-                    loginBtn.disabled = false;
-                    codeInput.focus();
-                } else {
-                    showError(result.message || 'Unable to send code.');
-                }
-            } catch (error) {
-                showError('Connection error. Please try again.');
-            } finally {
-                sendCodeBtn.disabled = false;
-                sendCodeBtn.textContent = 'Send Code to Email';
-            }
-        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const code = codeInput.value.trim();
+            const pin = pinInput.value;
             
-            if (!/^\d{6}$/.test(code)) {
-                showError('Code must be 6 digits');
+            if (pin.length !== 6) {
+                showError('PIN must be 6 digits');
                 return;
             }
             
@@ -207,7 +175,7 @@ LOGIN_TEMPLATE = """
                 const response = await fetch('/login', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ code: code })
+                    body: JSON.stringify({ pin: pin })
                 });
                 
                 const result = await response.json();
@@ -215,25 +183,17 @@ LOGIN_TEMPLATE = """
                 if (result.success) {
                     window.location.href = '/';
                 } else {
-                    showError(result.message || 'Invalid code');
-                    codeInput.value = '';
+                    showError(result.message || 'Invalid PIN');
+                    pinInput.value = '';
                     loginBtn.disabled = false;
-                    loginBtn.textContent = 'Verify and Access';
+                    loginBtn.textContent = 'Access System';
                 }
             } catch (error) {
                 showError('Connection error. Please try again.');
                 loginBtn.disabled = false;
-                loginBtn.textContent = 'Verify and Access';
+                loginBtn.textContent = 'Access System';
             }
         });
-
-        function showStatus(message) {
-            statusMessage.textContent = message;
-            statusMessage.style.display = 'block';
-            setTimeout(() => {
-                statusMessage.style.display = 'none';
-            }, 6000);
-        }
         
         function showError(message) {
             errorMessage.textContent = message;
@@ -251,7 +211,7 @@ LOGIN_TEMPLATE = """
             });
         }
         
-        sendCodeBtn.focus();
+        pinInput.focus();
     </script>
 </body>
 </html>
