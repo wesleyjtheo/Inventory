@@ -206,8 +206,8 @@ register_bulk_routes(app, warehouse)
 
 @app.route('/login', methods=['GET'])
 def login_page():
-    """Authentication disabled; send users to the main page."""
-    return redirect(url_for('index'))
+    """Compatibility route for clients that still open /login directly."""
+    return render_template_string(HTML_TEMPLATE)
 
 @app.route('/login', methods=['POST'])
 def login():
