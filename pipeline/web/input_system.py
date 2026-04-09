@@ -21,8 +21,7 @@ from reportlab.lib.enums import TA_CENTER
 
 # Import local modules
 from pipeline.core.auth import (
-    require_auth, get_security_pin, check_rate_limit, 
-    record_login_attempt, verify_pin, ACCESS_TOKEN, SECURITY_PIN_HASH
+    require_auth, ACCESS_TOKEN
 )
 from pipeline.core.helpers import get_local_ip
 from pipeline.core.sora_warehouse import SoraWarehouse
@@ -35,9 +34,6 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 app.config['SESSION_COOKIE_SECURE'] = os.getenv('SESSION_COOKIE_SECURE', 'false').lower() == 'true'
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
-
-# Ensure PIN hash is initialized for WSGI servers (e.g., Gunicorn).
-get_security_pin()
 
 
 @app.after_request
@@ -210,41 +206,15 @@ register_bulk_routes(app, warehouse)
 
 @app.route('/login', methods=['GET'])
 def login_page():
-    """Show login page"""
-    return render_template_string(LOGIN_TEMPLATE)
+    """Authentication disabled; send users to the main page."""
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Handle login"""
-    ip = request.remote_addr
-    
-    # Check rate limiting
-    if not check_rate_limit(ip):
-        from pipeline.core.auth import login_attempts, LOCKOUT_TIME
-        import time
-        remaining = LOCKOUT_TIME - (time.time() - login_attempts[ip][1])
-        return jsonify({
-            'success': False, 
-            'message': f'Too many failed attempts. Try again in {int(remaining)} seconds.'
-        }), 429
-    
-    data = request.json
-    pin = data.get('pin', '')
-    
-    # Verify PIN
-    if verify_pin(pin):
-        session['authenticated'] = True
-        session.permanent = True
-        record_login_attempt(ip, success=True)
-        return jsonify({'success': True})
-    else:
-        record_login_attempt(ip, success=False)
-        from pipeline.core.auth import login_attempts, MAX_LOGIN_ATTEMPTS
-        attempts_left = MAX_LOGIN_ATTEMPTS - login_attempts.get(ip, (0, 0))[0]
-        return jsonify({
-            'success': False, 
-            'message': f'Invalid PIN. {attempts_left} attempts remaining.'
-        })
+    """Authentication disabled compatibility endpoint."""
+    session['authenticated'] = True
+    session.permanent = True
+    return jsonify({'success': True, 'message': 'Authentication is currently disabled.'})
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -1011,9 +981,6 @@ def start_server(port=5000):
             (ip.startswith('172.') and ip.split('.')[1].isdigit() and 16 <= int(ip.split('.')[1]) <= 31)
         )
 
-    # Generate or load security PIN
-    security_pin = get_security_pin()
-    
     local_ip = get_local_ip()
     localhost_url = f"http://127.0.0.1:{port}"
     host_alias_url = f"http://localhost:{port}"
@@ -1023,8 +990,7 @@ def start_server(port=5000):
     print("\n" + "="*60)
     print("🏭 SORA WAREHOUSE MANAGEMENT SYSTEM")
     print("="*60)
-    print(f"\n🔒 SECURITY ENABLED")
-    print(f"   Access PIN: {security_pin}")
+    print(f"\n🔓 AUTHENTICATION DISABLED")
     print(f"   Session Token: {ACCESS_TOKEN[:16]}...")
     print("\n💻 Open from this computer:")
     print(f"   • {localhost_url}")
@@ -1041,10 +1007,8 @@ def start_server(port=5000):
     qr.make()
     qr.print_ascii(invert=True)
     
-    print(f"\n💡 Security Features:")
-    print(f"   • PIN authentication required")
-    print(f"   • Rate limiting (5 attempts per 5 minutes)")
-    print(f"   • Session expires after 1 hour of inactivity")
+    print(f"\n💡 Runtime Notes:")
+    print(f"   • Login protection is temporarily disabled")
     print(f"   • QR code changes with your IP address")
     print(f"\n🌐 Network:")
     print(f"   • Local IP: {local_ip}")
@@ -1052,7 +1016,7 @@ def start_server(port=5000):
     print(f"   • Make sure your phone is on the same WiFi network!")
     print(f"\n💾 Database: Supabase (credentials in .env)")
     print("\n" + "="*60)
-    print("⚠️  IMPORTANT: Keep your PIN and .env file secure!")
+    print("⚠️  IMPORTANT: Re-enable authentication before production use.")
     print("="*60 + "\n")
     
     app.run(host='0.0.0.0', port=port, debug=False)

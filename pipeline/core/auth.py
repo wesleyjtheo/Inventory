@@ -68,16 +68,9 @@ def record_login_attempt(ip, success=False):
         login_attempts[ip] = (attempts + 1, time.time())
 
 def require_auth(f):
-    """Decorator to require authentication"""
+    """Authentication disabled: allow access to all routes."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('authenticated'):
-            # Check if this is an API request (JSON) or browser request (HTML)
-            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'error': 'Authentication required', 'redirect': '/login'}), 401
-            else:
-                # Browser request - redirect to login page
-                return redirect('/login')
         return f(*args, **kwargs)
     return decorated_function
 
