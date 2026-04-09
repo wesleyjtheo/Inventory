@@ -21,8 +21,9 @@ from reportlab.lib.enums import TA_CENTER
 
 # Import local modules
 from pipeline.core.auth import (
-    require_auth, get_security_pin, check_rate_limit, 
-    record_login_attempt, verify_pin, ACCESS_TOKEN, SECURITY_PIN_HASH
+    require_auth, check_rate_limit,
+    record_login_attempt, ACCESS_TOKEN, issue_login_code,
+    verify_login_code, OTP_EXPIRY_SECONDS, get_otp_recipient
 )
 from pipeline.core.helpers import get_local_ip
 from pipeline.core.sora_warehouse import SoraWarehouse
@@ -35,9 +36,6 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 app.config['SESSION_COOKIE_SECURE'] = os.getenv('SESSION_COOKIE_SECURE', 'false').lower() == 'true'
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
-
-# Ensure PIN hash is initialized for WSGI servers (e.g., Gunicorn).
-get_security_pin()
 
 
 @app.after_request
@@ -215,7 +213,7 @@ def login_page():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Handle login"""
+    """Verify one-time code and create session"""
     ip = request.remote_addr
     
     # Check rate limiting
@@ -228,11 +226,14 @@ def login():
             'message': f'Too many failed attempts. Try again in {int(remaining)} seconds.'
         }), 429
     
-    data = request.json
-    pin = data.get('pin', '')
-    
-    # Verify PIN
-    if verify_pin(pin):
+    data = request.json or {}
+    code = str(data.get('code', '')).strip()
+
+    if not (code.isdigit() and len(code) == 6):
+        return jsonify({'success': False, 'message': 'Code must be 6 digits.'}), 400
+
+    ok, message = verify_login_code(ip, code)
+    if ok:
         session['authenticated'] = True
         session.permanent = True
         record_login_attempt(ip, success=True)
@@ -242,9 +243,37 @@ def login():
         from pipeline.core.auth import login_attempts, MAX_LOGIN_ATTEMPTS
         attempts_left = MAX_LOGIN_ATTEMPTS - login_attempts.get(ip, (0, 0))[0]
         return jsonify({
-            'success': False, 
-            'message': f'Invalid PIN. {attempts_left} attempts remaining.'
+            'success': False,
+            'message': f'{message} {attempts_left} attempts remaining.'
         })
+
+
+@app.route('/login/request-code', methods=['POST'])
+def request_login_code():
+    """Issue and email a one-time login code."""
+    ip = request.remote_addr
+
+    if not check_rate_limit(ip):
+        from pipeline.core.auth import login_attempts, LOCKOUT_TIME
+        import time
+        remaining = LOCKOUT_TIME - (time.time() - login_attempts[ip][1])
+        return jsonify({
+            'success': False,
+            'message': f'Too many failed attempts. Try again in {int(remaining)} seconds.'
+        }), 429
+
+    try:
+        issue_login_code(ip)
+        recipient = get_otp_recipient()
+        return jsonify({
+            'success': True,
+            'message': f'6-digit code sent to {recipient}. It expires in {OTP_EXPIRY_SECONDS // 60} minutes.'
+        })
+    except Exception as exc:
+        return jsonify({
+            'success': False,
+            'message': f'Unable to send login code: {exc}'
+        }), 500
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -1011,9 +1040,6 @@ def start_server(port=5000):
             (ip.startswith('172.') and ip.split('.')[1].isdigit() and 16 <= int(ip.split('.')[1]) <= 31)
         )
 
-    # Generate or load security PIN
-    security_pin = get_security_pin()
-    
     local_ip = get_local_ip()
     localhost_url = f"http://127.0.0.1:{port}"
     host_alias_url = f"http://localhost:{port}"
@@ -1024,7 +1050,7 @@ def start_server(port=5000):
     print("🏭 SORA WAREHOUSE MANAGEMENT SYSTEM")
     print("="*60)
     print(f"\n🔒 SECURITY ENABLED")
-    print(f"   Access PIN: {security_pin}")
+    print(f"   Login Code Email: {get_otp_recipient()}")
     print(f"   Session Token: {ACCESS_TOKEN[:16]}...")
     print("\n💻 Open from this computer:")
     print(f"   • {localhost_url}")
@@ -1042,7 +1068,8 @@ def start_server(port=5000):
     qr.print_ascii(invert=True)
     
     print(f"\n💡 Security Features:")
-    print(f"   • PIN authentication required")
+    print(f"   • Email OTP authentication required")
+    print(f"   • One-time code expires in {OTP_EXPIRY_SECONDS // 60} minutes")
     print(f"   • Rate limiting (5 attempts per 5 minutes)")
     print(f"   • Session expires after 1 hour of inactivity")
     print(f"   • QR code changes with your IP address")
